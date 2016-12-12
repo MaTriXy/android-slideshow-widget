@@ -1,82 +1,40 @@
 package com.marvinlabs.widget.slideshow.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.util.Collection;
+
 /**
- * A BitmapAdapter that loads them from application resources.
+ * A GenericBitmapAdapter that loads images from application resources.
  * <p/>
  * Created by Vincent Mimoun-Prat @ MarvinLabs on 29/05/2014.
  */
-public class ResourceBitmapAdapter extends BitmapAdapter {
-
-    // The options to pass to the BitmapFactory used to decode the bitmaps
-    private BitmapFactory.Options bitmapFactoryOptions;
-
-    // The resource IDs of the images to load
-    private int[] slideImageIds;
-
-    //==============================================================================================
-    // GENERAL METHODS
-    //==
+public class ResourceBitmapAdapter extends GenericResourceBitmapAdapter<Integer> {
 
     /**
      * Constructor
      *
-     * @param context       The context in which the adapter is created (activity)
-     * @param slideImageIds The resource IDs of the images to load
+     * @param context     The context in which the adapter is created (activity)
+     * @param resourceIds The resourceIds for which we have images to load
      */
-    public ResourceBitmapAdapter(Context context, int[] slideImageIds) {
-        this(context, slideImageIds, null);
+    public ResourceBitmapAdapter(Context context, Collection<Integer> resourceIds) {
+        super(context, resourceIds);
     }
 
     /**
      * Constructor
      *
      * @param context              The context in which the adapter is created (activity)
-     * @param slideImageIds        The resource IDs of the images to load
+     * @param resourceIds          The resourceIds for which we have images to load
      * @param bitmapFactoryOptions The options to pass to the BitmapFactory used to decode the
      *                             bitmaps
      */
-    public ResourceBitmapAdapter(Context context, int[] slideImageIds, BitmapFactory.Options bitmapFactoryOptions) {
-        super(context);
-        this.bitmapFactoryOptions = bitmapFactoryOptions;
-        this.slideImageIds = slideImageIds;
+    public ResourceBitmapAdapter(Context context, Collection<Integer> resourceIds, BitmapFactory.Options bitmapFactoryOptions) {
+        super(context, resourceIds, bitmapFactoryOptions);
     }
 
-    //==============================================================================================
-    // INTERFACE IMPLEMENTATION: Adapter
-    //==
-
-    @Override
-    public int getCount() {
-        return slideImageIds.length;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return slideImageIds[position];
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return slideImageIds[position];
-    }
-
-    //==============================================================================================
-    // BITMAP LOADING
-    //==
-
-    @Override
-    protected void loadBitmap(int position) {
-        if (position < 0 || position >= slideImageIds.length) onBitmapNotAvailable(position);
-
-        Bitmap bm = BitmapFactory.decodeResource(getContext().getResources(), slideImageIds[position], bitmapFactoryOptions);
-        if (bm != null) {
-            onBitmapLoaded(position, bm);
-        } else {
-            onBitmapNotAvailable(position);
-        }
+    protected int getItemImageResourceId(Integer resourceId, int position) {
+        return resourceId;
     }
 }

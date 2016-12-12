@@ -12,9 +12,12 @@ import android.widget.Toast;
 
 import com.marvinlabs.widget.slideshow.SlideShowAdapter;
 import com.marvinlabs.widget.slideshow.SlideShowView;
+import com.marvinlabs.widget.slideshow.adapter.GenericBitmapAdapter;
 import com.marvinlabs.widget.slideshow.adapter.RemoteBitmapAdapter;
 import com.marvinlabs.widget.slideshow.adapter.ResourceBitmapAdapter;
-import com.marvinlabs.widget.slideshow.playlist.RandomPlayList;
+import com.marvinlabs.widget.slideshow.picasso.GenericPicassoBitmapAdapter;
+import com.marvinlabs.widget.slideshow.picasso.PicassoRemoteBitmapAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
 
@@ -44,18 +47,32 @@ public class SlideShowActivity extends Activity {
                 "http://lorempixel.com/1280/720/nature",
                 "http://lorempixel.com/1280/720/people",
                 "http://lorempixel.com/1280/720/city",
-            };
+        };
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inSampleSize = 2;
         adapter = new RemoteBitmapAdapter(this, Arrays.asList(slideUrls), opts);
         return adapter;
     }
 
+    private SlideShowAdapter createPicassoAdapter() {
+        Picasso.with(this).setLoggingEnabled(true);
+
+        String[] slideUrls = new String[]{
+                "http://www.marvinlabs.com/wp-content/uploads/2013/10/logo.png",
+                "http://lorempixel.com/1280/720/sports",
+                "http://lorempixel.com/1280/720/nature",
+                "http://lorempixel.com/1280/720/people",
+                "http://lorempixel.com/1280/720/city",
+        };
+        adapter = new PicassoRemoteBitmapAdapter(this, Arrays.asList(slideUrls));
+        return adapter;
+    }
+
     private SlideShowAdapter createResourceAdapter() {
-        int[] slideResources = new int[]{R.raw.slide_01, R.raw.slide_02, R.raw.slide_03, R.raw.slide_04};
+        Integer[] slideResources = new Integer[]{R.raw.slide_01, R.raw.slide_02, R.raw.slide_03, R.raw.slide_04};
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inSampleSize = 2;
-        adapter = new ResourceBitmapAdapter(this, slideResources, opts);
+        adapter = new ResourceBitmapAdapter(this, Arrays.asList(slideResources), opts);
         return adapter;
     }
 
@@ -67,8 +84,10 @@ public class SlideShowActivity extends Activity {
 
     @Override
     protected void onStop() {
-        if (adapter instanceof RemoteBitmapAdapter) {
-            ((RemoteBitmapAdapter) adapter).stopAllDownloads();
+        if (adapter instanceof GenericBitmapAdapter) {
+            ((GenericBitmapAdapter) adapter).shutdown();
+        } else if (adapter instanceof GenericPicassoBitmapAdapter) {
+            ((GenericPicassoBitmapAdapter) adapter).shutdown();
         }
         super.onStop();
     }
@@ -77,10 +96,11 @@ public class SlideShowActivity extends Activity {
         // Create an adapter
         // slideShowView.setAdapter(createResourceAdapter());
         slideShowView.setAdapter(createRemoteAdapter());
+        // slideShowView.setAdapter(createPicassoAdapter());
 
         // Optional customisation follows
-        // slideShowView.setTransitionFactory(new SlideAndZoomTransitionFactory(2000));
-        slideShowView.setPlaylist(new RandomPlayList());
+        // slideShowView.setTransitionFactory(new RandomTransitionFactory());
+        // slideShowView.setPlaylist(new RandomPlayList());
 
         // Some listeners if needed
         slideShowView.setOnSlideShowEventListener(slideShowListener);

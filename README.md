@@ -20,9 +20,11 @@ A demo of the widget is worth a thousand words. You can download it for free on 
 The easiest way to get the library included in your project is by using Gradle. Simply add the 
 following line to your dependencies block:
 
-    dependencies {
-        compile 'com.marvinlabs:android-slideshow-widget:0.1.+@aar'
-    }
+```groovy
+dependencies {
+    compile 'com.marvinlabs:android-slideshow-widget:0.4.+@aar'
+}
+```
     
 Of course, you can replace the version number by whichever version you need (you can have a look at 
 this repository's tags to know which is the latest).
@@ -31,27 +33,35 @@ this repository's tags to know which is the latest).
 
 To include a slide show in your layout, simply use the following XML code snippet:
 
-    <com.marvinlabs.widget.slideshow.SlideShowView
-        android:id="@+id/slideshow"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+```xml
+<com.marvinlabs.widget.slideshow.SlideShowView
+    android:id="@+id/slideshow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+```
 
 You can then get the `SlideShowView` using the usual technique:
 
-    slideShowView = (SlideShowView) findViewById(R.id.slideshow);
+```java
+slideShowView = (SlideShowView) findViewById(R.id.slideshow);
+```
 
 The next step is to create the adapter that will bind your slide data to actual views. This is a 
 process very similar to what you do when working with the `ListView` widget. In this library, 
 we have a few base adapters to help you create picture slide shows easily from images in your
 application resources or from images on the Internet. The code would look like that:
 
-    adapter = new ResourceBitmapAdapter(this, new int[]{
-        R.raw.slide_01, R.raw.slide_02, R.raw.slide_03, R.raw.slide_04});
+```java
+adapter = new ResourceBitmapAdapter(this, new int[]{
+    R.raw.slide_01, R.raw.slide_02, R.raw.slide_03, R.raw.slide_04});
+```
 
 Once your activity is ready, or inside an event handler like a button click method, you can then 
 start the slideshow:
 
-    slideShowView.play();
+```java
+slideShowView.play();
+```
 
 ## Customisable components
 
@@ -65,7 +75,16 @@ To get you started with picture slide shows, we have created a few useful adapte
   - `ResourceBitmapAdapter` will allow you to show a list of application resource drawables
   - `RemoteBitmapAdapter` will allow you to show a list of images that are loaded from the 
     Internet.
-   
+    
+We also have a Picasso plugin library. That provides an adapter that works with Picasso instead of
+AsyncTasks. To use it, simply add the corresponding dependency using gradle:
+
+```groovy
+dependencies {
+    compile 'com.marvinlabs:android-slideshow-widget-picasso-plugin:0.4.+@aar'
+}
+```
+    
 ### SlideTransitionFactory
 
 You want something else than just a fade between slides? Simply implement this interface to return 
@@ -108,6 +127,18 @@ get updates about our work, you can also:
 * [Follow us on Facebook](http://www.facebook.com/studio.marvinlabs)
 
 ## Change log
+
+### 0.5.0 (2014-06-03)
+
+  - [new] making the adapters more generic so that they can easily be used with existing data
+  - [new] added a Picasso plugin (an adapter to use Picasso to load remote images)
+
+### 0.3.0 (2014-06-02)
+
+  - [new] new transition factories
+  - [new] playback control function (next, previous, pause, resume)
+  - [new] widget can be configured from XML
+  - [fix] issue #2
 
 ### 0.2.0 (2014-06-01)
 
